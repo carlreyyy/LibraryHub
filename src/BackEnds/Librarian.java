@@ -3,9 +3,41 @@ package BackEnds;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
 
 public class Librarian extends Books{
+	
+	public void processNextRequest(Boolean add) {
+		String query = "SELECT * FROM reserved_books ORDER BY id ASC LIMIT 1";
+		try(PreparedStatement statement = con.prepareStatement(query);
+			ResultSet resultSet = statement.executeQuery()){
+			if(resultSet.next()) {
+				int id = resultSet.getInt("id");
+				if(add == true) acceptReservedBook(id);
+				else denyReservedBook(id);
+			} else {
+				System.out.println("No pending requests to process.");
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void denyReservedBook(int id) {
+		String delete = "DELETE FROM reserved_books WHERE id = ?";
+		
+		try(PreparedStatement statement = con.prepareStatement(delete)){
+			statement.setInt(1, id);
+			
+			int rows = statement.executeUpdate();
+			
+			if(rows>0) System.out.println("Reservation deleted successfully.");
+			else  System.out.println("No reservation found with the specified ID.");
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public void acceptReservedBook(int id) {
 		String delete = "DELETE FROM reserved_books WHERE id = ?";
@@ -77,7 +109,7 @@ public class Librarian extends Books{
 	
 	public static void main(String[] args) {
 		Librarian l = new Librarian();
-		l.acceptReservedBook(2);
+		l.processNextRequest(false);
 	}
 	
 }

@@ -6,10 +6,10 @@ import java.util.LinkedList;
 public class Books extends Database{
 	LinkedList<String[][]> userData = new LinkedList<>();
 	String bookName;
-	int serialNumber;
-	int quantity;
-	String category;
-	String author;
+	private int serialNumber;
+	private int quantity;
+	private String category;
+	private String author;
 	
 	public Books(String bookName, int quantity, String category, String author) {
 		this.bookName = bookName;
