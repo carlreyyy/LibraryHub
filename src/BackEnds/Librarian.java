@@ -109,7 +109,7 @@ public class Librarian extends Books{
 	
 	public static void main(String[] args) {
 		Librarian l = new Librarian();
-		l.processNextRequest(false);
+		l.processNextRequest(true);
 	}
 	
 }

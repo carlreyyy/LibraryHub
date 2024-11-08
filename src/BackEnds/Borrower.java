@@ -3,6 +3,7 @@ package BackEnds;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 
 public class Borrower extends Books{
 
@@ -43,14 +44,11 @@ public class Borrower extends Books{
 		}
 	}
 	
-	//public Object[][] getBorrowedBooks(String userName){
-		
-		
-	//}
+	
 	
 	public static void main(String[] args) {
 		Borrower b = new Borrower();
-		b.reserveBooks(1000, "reyyy");
+		b.reserveBooks(1005, "Tibon");
 	}
 	
 }

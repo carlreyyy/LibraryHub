@@ -1,11 +1,13 @@
 package BackEnds;
 
 import java.sql.*;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class Books extends Database{
-	LinkedList<String[][]> userData = new LinkedList<>();
-	String bookName;
+	private LinkedList<Object[]> userReservedBooks = new LinkedList<>();
+	private LinkedList<Object[]> availableBookDetails = new LinkedList<>();
+	private String bookName;
 	private int serialNumber;
 	private int quantity;
 	private String category;
@@ -37,6 +39,70 @@ public class Books extends Database{
 		}
 		
 		return serialNumber;
+	}
+	
+	public LinkedList<Object[]> bookAvailableBooks() {
+		String query = "SELECT * FROM books";
+		
+		try(PreparedStatement statement =  con.prepareStatement(query);ResultSet resultSet = statement.executeQuery()){
+				while(resultSet.next()) {
+					Object[] bookDetails = new Object[4];
+					bookDetails[0] = resultSet.getString("bookName");
+					bookDetails[1] = resultSet.getInt("quantity");
+					bookDetails[2] = resultSet.getString("category");
+					bookDetails[3] = resultSet.getString("author");
+					
+					availableBookDetails.add(bookDetails);
+				}	
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return availableBookDetails;
+	}
+	
+	
+	public LinkedList<Object[]> getUserIssuedBooks(String userName){
+		userReservedBooks.clear();
+		
+		String query = "SELECT * FROM issued_books WHERE borrower_userName = ?";
+	
+		try(PreparedStatement statement = con.prepareStatement(query)){
+			statement.setString(1, userName);
+			
+			try(ResultSet resultSet = statement.executeQuery()){
+				while(resultSet.next()) {
+					int num = getSerialNumber(resultSet.getString("book_name"));
+					
+					String getDetails = "SELECT * FROM books WHERE serialNumber = ?";
+					try(PreparedStatement getDetailsQuery = con.prepareStatement(getDetails)){
+						getDetailsQuery.setInt(1, num);
+						try(ResultSet detailsResultSet = getDetailsQuery.executeQuery()){
+							while(detailsResultSet.next()) {
+								Object[] reservedBooks = new Object[3];
+								reservedBooks[0] = detailsResultSet.getString("bookName");
+								reservedBooks[1] = detailsResultSet.getString("category");
+								reservedBooks[2] = detailsResultSet.getString("author");
+								
+								userReservedBooks.add(reservedBooks);
+							}
+							
+						}
+						
+					} catch(SQLException e) {
+						e.printStackTrace();
+					}
+					
+				}
+				
+			}
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return userReservedBooks;
+		
 	}
 	
 	//Database Interaction
@@ -122,8 +188,11 @@ public class Books extends Database{
 	
 	public static void main(String[] args) {
 		Books b = new Books();
-		System.out.println(b.isAvailable(10001));
+		 LinkedList<Object[]> books = b.getUserIssuedBooks("Tibon");
 		
+		 for (Object[] book : books) {
+		        System.out.println(Arrays.toString(book));  // Print each book's details as a string array
+		    }
 	}
 	
 }
