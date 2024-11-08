@@ -6,6 +6,7 @@ import java.util.LinkedList;
 public class Books extends Database{
 	LinkedList<String[][]> userData = new LinkedList<>();
 	String bookName;
+	int serialNumber;
 	int quantity;
 	String category;
 	String author;
@@ -48,12 +49,20 @@ public class Books extends Database{
 				
 			int rowsUpdated = statement.executeUpdate();
 			if(rowsUpdated > 0) System.out.println("Quantity updated successfully.");
-			else  System.out.println("No book found with the provided serial number.");
+			else  System.out.println("Book not available.");
 				
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	//bookName
+	
+	//quantity
+	
+	//category
+	
+	//author
 	
 	
 	//Add and Delete Books
@@ -88,10 +97,33 @@ public class Books extends Database{
 		
 	}
 	
+	public boolean isAvailable(int serialNumber) {
+		 boolean flag = false;
+		 String query = "SELECT * FROM books WHERE serialNumber = ?";
+		 
+		 try(PreparedStatement statement = con.prepareStatement(query)){
+			 statement.setInt(1, serialNumber);
+			 
+			 try(ResultSet resultSet = statement.executeQuery()){
+				if(resultSet.next()) {
+					int quantity = resultSet.getInt("quantity");
+					if(quantity > 0) flag = true;
+					else System.out.println("No books available");
+				} else {
+					System.out.println("No books with serial number " + serialNumber);
+				}
+			 }
+		 } catch(SQLException e) {
+			 e.printStackTrace();
+		 }
+		 
+		 return flag;
+	}
+	
 	public static void main(String[] args) {
 		Books b = new Books();
-		int serial = b.getSerialNumber("Proud as a peacock, brave as a lion");
-		b.deleteBook(serial);
+		System.out.println(b.isAvailable(10001));
+		
 	}
 	
 }
