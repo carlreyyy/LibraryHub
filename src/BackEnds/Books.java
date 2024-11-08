@@ -41,7 +41,7 @@ public class Books extends Database{
 		return serialNumber;
 	}
 	
-	public LinkedList<Object[]> bookAvailableBooks() {
+	public LinkedList<Object[]> availableBooks() {
 		String query = "SELECT * FROM books";
 		
 		try(PreparedStatement statement =  con.prepareStatement(query);ResultSet resultSet = statement.executeQuery()){
