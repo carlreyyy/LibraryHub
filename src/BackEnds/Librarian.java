@@ -41,7 +41,7 @@ public class Librarian extends Books{
 	
 	public void acceptReservedBook(int id) {
 		String delete = "DELETE FROM reserved_books WHERE id = ?";
-		String insert = "INSERT INTO issued_books(borrower_userName,borrower_email,book_serialNumber,book_name) VALUES(?,?,?,?)";
+		String insert = "INSERT INTO issued_books(borrower_userName,borrower_email,book_serialNumber,book_name, reservation_date, due_date) VALUES(?,?,?,?,?,?)";
 		String query = "SELECT * FROM reserved_books WHERE id = ?";
 		String available = "UPDATE books SET quantity = quantity - 1 WHERE serialNumber = ?";
 		
@@ -54,6 +54,8 @@ public class Librarian extends Books{
 					String userName = resultSet.getString("borrower_userName");
 					String email = resultSet.getString("borrower_email");
 					int bookSerial = resultSet.getInt("book_serialNumber");
+					java.sql.Date reservationDate = resultSet.getDate("reservation_date");
+					java.sql.Date dueDate = resultSet.getDate("due_date");
 					
 					if(isAvailable(bookSerial)) {
 						try(PreparedStatement deleteStatement = con.prepareStatement(delete); 
@@ -63,6 +65,8 @@ public class Librarian extends Books{
 							insertStatement.setString(2, email);
 							insertStatement.setInt(3, bookSerial);
 							insertStatement.setString(4, bookName);
+							insertStatement.setDate(5, reservationDate);
+							insertStatement.setDate(6, dueDate);
 									
 							deleteStatement.setInt(1, id);
 							

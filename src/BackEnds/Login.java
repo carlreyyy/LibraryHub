@@ -2,6 +2,25 @@ package BackEnds;
 import java.sql.*;
 
 public class Login extends Database{
+	protected int userId;
+	protected String userName;
+	
+	public void setId(int userId) {
+		this.userId = userId;
+	}
+	
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	
+	public int getUserId() {
+		return userId;
+	}
+	
+	public String getUserName() {
+		return userName;
+	}
+	
 	
 	public void checkInfo(String userName, String password) {
 		String query = "SELECT * FROM users_informations WHERE userName = ? AND password = ?";
@@ -11,6 +30,8 @@ public class Login extends Database{
 			
 			try(ResultSet resultSet = statement.executeQuery()){
 				if(resultSet.next()) {
+					setId(resultSet.getInt("id"));
+					setUserName(resultSet.getString("userName"));
 					System.out.println("Log-in succesful!");
 					if(userName.equals("KaaruRee")) {
 						//call the admin page
@@ -34,6 +55,7 @@ public class Login extends Database{
 	public static void main(String[] args) {
 		Login log = new Login();
 		log.checkInfo("reyy", "12345");
+		System.out.println(log.getUserId());
 	}
 	
 }

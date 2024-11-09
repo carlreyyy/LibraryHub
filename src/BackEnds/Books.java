@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public class Books extends Database{
+public class Books extends Login{
 	private LinkedList<Object[]> userReservedBooks = new LinkedList<>();
 	private LinkedList<Object[]> availableBookDetails = new LinkedList<>();
 	private String bookName;
