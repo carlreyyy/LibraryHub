@@ -41,6 +41,61 @@ public class Books extends Login{
 		return serialNumber;
 	}
 	
+	//Search books
+	
+	public LinkedList<String> searchBooksByCategory(String[] category) {
+        LinkedList<String> foundBooks = new LinkedList<>();
+        StringBuilder queryBuilder = new StringBuilder("SELECT bookName FROM books WHERE category IN (");
+        for (int i = 0; i < category.length; i++) {
+            queryBuilder.append("?");
+            if (i < category.length - 1) {
+                queryBuilder.append(", ");
+            }
+        }
+        queryBuilder.append(")");
+        String query = queryBuilder.toString();
+        System.out.println("Executing query: " + query);
+        try (PreparedStatement statement = con.prepareStatement(query)) {
+            for (int i = 0; i < category.length; i++) {
+                statement.setString(i + 1, category[i]);
+            }
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    foundBooks.add(resultSet.getString("bookName"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return foundBooks;
+    }
+	
+	 public String searchTitle(String bookName) {
+		    if (bookName == null || bookName.isEmpty()) {
+		        return "No Books Available";
+		    }
+		    String query = "SELECT * FROM books WHERE bookName = ?";
+		    String result = "No Books Available";
+		    try (PreparedStatement statement = con.prepareStatement(query)) {
+		        statement.setString(1, bookName);
+		        try (ResultSet rs = statement.executeQuery()) {
+		            if (rs.next()) {
+		                String foundName = rs.getString("bookName");
+		                String author = rs.getString("author");
+		                String category = rs.getString("category");
+		                int quantity = rs.getInt("quantity");
+		                result = "Title: " + foundName + "\n"
+		                       + "Author: " + author + "\n"
+		                       + "Category: " + category + "\n"
+		                       + "Quantity: " + quantity;
+		            }
+		        }
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+		    return result;
+		}
+	
 	public LinkedList<Object[]> availableBooks() {
 		String query = "SELECT * FROM books";
 		

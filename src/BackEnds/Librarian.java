@@ -23,6 +23,23 @@ public class Librarian extends Books{
 		}
 	}
 	
+	public void markAsLost(String bookName) {
+	    String updateQuery = "UPDATE books SET quantity = quantity - 1 WHERE bookName = ? AND quantity > 0";
+	    
+	    try (PreparedStatement statement = con.prepareStatement(updateQuery)) {
+	        statement.setString(1, bookName);
+	        int rowsUpdated = statement.executeUpdate();
+	        
+	        if (rowsUpdated > 0) {
+	            System.out.println("Book marked as lost: " + bookName);
+	        } else {
+	            System.out.println("Book not found or no copies available.");
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("Error marking book as lost: " + e.getMessage());
+	    }
+	}
+	
 	public void denyReservedBook(int id) {
 		String delete = "DELETE FROM reserved_books WHERE id = ?";
 		
