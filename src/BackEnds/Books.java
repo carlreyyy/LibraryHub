@@ -311,8 +311,7 @@ public class Books extends Database{
 		 return flag;
 	}
 	
-		
-		// NEW MARKED RETURNED BOOK 9/11/2024
+		// NEW MARKED RETURNED BOOK 9/11/2024.
 		public void returnBook(int borrowedBookId, int borrowerId) {
 		    String updateBookQuantity = "UPDATE books SET quantity = quantity + 1 WHERE serialNumber = ?";
 		    String deleteIssuedBook = "DELETE FROM issued_books WHERE bookId = ? AND borrowerId = ?";
